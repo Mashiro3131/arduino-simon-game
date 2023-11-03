@@ -103,8 +103,8 @@ void loop() {
 
     // On va vérifier si le jeu a démarré ou non
     if (!gameStarted) {
-        startUpGame();
         gameStarted = true;
+        startUpGame();
     }
 
     // Ca va générer un nombre aléatoire entre 0 et le nombre de leds qu'on a
@@ -121,8 +121,8 @@ void loop() {
 
     // Vérifie si le joueur a répliqué la bonne séquence
     if (!playerReplicateSequence()) {
-        gameOver();
         gameStarted = false; 
+        gameOver();
     }
 
     delay(300);
@@ -137,8 +137,9 @@ void loop() {
 
     // Vérifie si le joueur a atteint le nombre de séquence maximum, si oui, il a gagné et on va jouer une petite musique de victoire
     if (sequenceIndex == gameLength - 1) {
-        gameVictory();
         gameStarted = false;
+        gameVictory();
+
     }
 }
 
