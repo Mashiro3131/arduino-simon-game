@@ -107,33 +107,38 @@ void loop() {
         gameStarted = true;
     }
 
-    // Add a random color to the end of the sequence
+    // Ca va générer un nombre aléatoire entre 0 et le nombre de leds qu'on a
     sequence[sequenceIndex] = random(0, numLeds);
     sequenceIndex++;
 
+    // Vérifie si l'index de la séquence est supérieur à la longueur de la séquence
     if (sequenceIndex >= gameLength) {
         sequenceIndex = gameLength - 1;
     }
-
+    
+    // Génère la séquence de jeu
     gameGenerateSequence();
 
+    // Vérifie si le joueur a répliqué la bonne séquence
     if (!playerReplicateSequence()) {
         gameOver();
-        gameStarted = false; // reset gameStarted to false after game over
+        gameStarted = false; 
     }
-
-
-    if (sequenceIndex == gameLength - 1) {
-        gameVictory();
-        gameStarted = false; // reset gameStarted to false after game over
-    }
-
 
     delay(300);
 
+    // Joue un petit son pour indiquer que le joueur a réussi à répliquer la séquence
     if (sequenceIndex > 0) {
         playLevelUpSound();
         delay(300);
+    }
+
+    delay(300);
+
+    // Vérifie si le joueur a atteint le nombre de séquence maximum, si oui, il a gagné et on va jouer une petite musique de victoire
+    if (sequenceIndex == gameLength - 1) {
+        gameVictory();
+        gameStarted = false;
     }
 }
 
