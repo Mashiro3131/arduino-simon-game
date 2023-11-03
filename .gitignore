@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+
+launch.json
+c_cpp_properties.json
+settings.json

@@ -7,13 +7,7 @@
 ******************************************************/
 
 
-
-
 #include <Arduino.h>
-#include "pitches.h"
-
-/* Constants - define pin numbers for LEDs,
-   buttons and speaker, and also the game tones: */
 
 
 #define blueButtonLedPin 2
@@ -26,6 +20,8 @@ const int yellowButtonPin = A3;
 const int redButtonPin = A4;
 const int greenButtonPin = A5;
 
+#define buzzerPin 6
+
 
 const int blueButtonNote = 165;   // 165 Hz = Mi3 (bleu)
 const int yellowButtonNote = 131; // 131 Hz = Sol3 (jaune)
@@ -34,39 +30,26 @@ const int greenButtonNote = 82;   // 82 Hz = Mi2 (vert)
 
 const int errorButtonNote = 33;   // 33 Hz = Do1 (erreur)
 
-// buttonLedPins = buttonLedPins (const int buttonLedPins[] = {2, 3, 4, 5};)
+
 const int buttonLedPins[] = {blueButtonLedPin, yellowButtonLedPin, redButtonLedPin, greenButtonLedPin};
-
-// buttonPins = buttonPins (const int buttonPins[] = {A2, A3, A4, A5};)
 const int buttonPins[] = {blueButtonPin, yellowButtonPin, redButtonPin, greenButtonPin};
-
-
-#define buzzerPin 6
-
-// buttonTones = buttonTones (const int buttonTones[] = { NOTE_G3, NOTE_E3, NOTE_A2, NOTE_E2};)
-
 const int buttonTones[] = {blueButtonNote, yellowButtonNote, redButtonNote, greenButtonNote};
 
 
-/* Global variables - store the game state */
-
-// gameLength = MAX_GAME_LENGTH (#define MAX_GAME_LENGTH 100)
 #define gameLength 3
-
-
-// sequence = sequence (int sequence[MAX_GAME_LENGTH] = {0};)
 int sequence[gameLength] = {0};
-
-// sequenceIndex = gameIndex (int gameIndex = 0;)
 int sequenceIndex = 0;
 
 
+// pour la fonction gameGenerateSequence()
 const int delayBetweenNotes = 50;
 const int delayAfterSequence = 50;
+
 
 // Pour la fonction getButtonState()
 int buttonState[4] = {HIGH, HIGH, HIGH, HIGH};
 int lastButtonState[4] = {HIGH, HIGH, HIGH, HIGH};
+
 unsigned long lastDebounceTime[4] = {0, 0, 0, 0};
 const unsigned long debounceDelay = 5;
 
@@ -74,11 +57,10 @@ const unsigned long debounceDelay = 5;
 /**
     Pour la fonction gameOver, ca va nous permettre d'éviter l'animation du début
     si on à déjà démarré la partie comme ca si on souhaite rejour on aura pas le 
-    jingle du démarrage () 
+    jingle du démarrage
   */
 bool startupAnimationPlayed  = false;
 bool gameStarted = false;
-
 
 
 /* On va séparer numLeds et numButtons pour pouvoir les utiliser dans les fonctions
@@ -115,7 +97,6 @@ void setup() {
     // Seed the random number generator
     randomSeed(analogRead(A0));
 }
-
 
 
 void loop() {
@@ -158,7 +139,6 @@ void loop() {
 
 
 
-
 /**
    Game Functions
 */
@@ -192,7 +172,6 @@ void startUpGame() {
 }
 
 
-
 // 2)
 void lightAndSound(int id) {
 
@@ -206,14 +185,14 @@ void lightAndSound(int id) {
 
 }
 
-
-
-// OK
+// Ca sera la fonciton qui nous permettra de générer la séquence de jeu
 void gameGenerateSequence() {
-  
+    
+    // On va faire une boucle pour allumer les leds et jouer les sons
     for (int i = 0; i < sequenceIndex; i++) {
         int currentLed = sequence[i];
-  
+
+        // On va vérifier si la led est dans le nombre de leds qu'on a
         if (currentLed >= 0 && currentLed < numLeds) {
             lightAndSound(currentLed);
             delay(delayBetweenNotes);
@@ -221,10 +200,6 @@ void gameGenerateSequence() {
     }
     delay(delayAfterSequence);
 }
-
-
-
-// 4)
 
 
 int getButtonState() {
@@ -256,8 +231,7 @@ int getButtonState() {
 }
 
 
-
-// 5) On va faire un booléen pour vérifier si le joueur a répliqué la bonne séquence
+// On va faire un booléen pour vérifier si le joueur a répliqué la bonne séquence
 bool playerReplicateSequence() {
 
     // Vérifie si le joueur peut répliquer la séquence
@@ -273,7 +247,6 @@ bool playerReplicateSequence() {
     // Si le joueur a répliqué la bonne séquence, on retourne true
     return true;
 }
-
 
 
 // 6) On va faire une fonction pour si le joueur a perdu, pour afficher son score et réinitialiser le jeu
@@ -293,9 +266,7 @@ void gameOver() {
 }
 
 
-
-// 7)
-
+// Fonction pour si le joueur a gagné, on affiche son score, réinitialiser le jeu et joue une petite musique + animation de victoire
 void gameVictory() {
 
     // Patiente un moment avant d'afficher le score
@@ -312,6 +283,8 @@ void gameVictory() {
     gameVictoryTone();
 
 }
+
+
 
 /**
     Game Animations
@@ -384,14 +357,12 @@ void gameVictoryAnimation(){
     unsigned long startTime = millis();
     unsigned long duration = 4000; // 4 secondes
     
-    
     // Pendant 4 secondes, on va allumer une LED aléatoirement
     while (millis() - startTime < duration) {
         
         // Allumer une LED aléatoirement pour l'animation de victoire
         int randomLed = random(numLeds);
         digitalWrite(buttonLedPins[randomLed], HIGH);
-
 
         // Délai de 5ms pour que la LED reste allumée
         delay(20);
@@ -405,38 +376,10 @@ void gameVictoryAnimation(){
 
 
 
-/*
-void startUpGameAnimation(){
-  
-  for (int i = 0; i < 4; i++) {
-      lightAndSound(i);
-      delay(50);
-  }
-}
-*/
-
-/**
-void startUpPartyAnimation() {
-
-  int brightness = 0;
-  int fadeAmount = 5;
-  int blinkSpeed = 50;
-
-  analogWrite(buttonLedPins[0], brightness);
-  brightness = brightness + fadeAmount;
-
-  if (brightness <= 0 || brightness >= 255) {
-    fadeAmount = -fadeAmount;
-
-  }
-
-  delay(blinkSpeed);
-
-}
-*/
-
 /**
    Game musics
+   Note : Ca aurait été mieux de pouvoir séparer les musiques dans un autre fichier pour éviter d'avoir un fichier trop long
+          mais apparament c'est compliqué de faire ca avec Arduino IDE.
 */
 
 void startUpGameTone(){
