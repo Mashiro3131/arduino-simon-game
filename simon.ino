@@ -129,7 +129,7 @@ void loop() {
 
     // Joue un petit son pour indiquer que le joueur a réussi à répliquer la séquence
     if (sequenceIndex > 0) {
-        playLevelUpSound();
+        playLevelUpTone();
         delay(300);
     }
 
@@ -458,10 +458,7 @@ void startUpGameTone(){
 }
 
 
-
-
-
-void playLevelUpSound() {
+void playLevelUpTone() {
   tone(buzzerPin, 784);
   delay(141);
   noTone(buzzerPin);
