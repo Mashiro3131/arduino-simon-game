@@ -1,6 +1,6 @@
 /******************************************************
  
- * Simon Says Game - Copyright (c) [Year] Nico Anthony Mengisen
+ * Simon Says Game - Copyright (c) 2023 Nico Anthony Mengisen
  * Released under the MIT License.
  * See LICENSE.txt for details.
  
