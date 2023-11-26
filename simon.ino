@@ -3,6 +3,7 @@
  * Simon Says Game - Copyright (c) 2023 Nico Anthony Mengisen
  * Released under the MIT License.
  * See LICENSE.txt for details.
+ * Inspired by https://github.com/urish/arduino-simon
  
 ******************************************************/
 
